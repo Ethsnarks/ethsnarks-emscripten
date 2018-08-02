@@ -9,7 +9,7 @@ set(USE_ASM OFF)
 set(WITH_PROCPS OFF)
 set(DEBUG ON)
 set(WITH_SUPERCOP OFF)
-set(OPT_FLAGS "-O3 -s EXCEPTION_DEBUG=1 -s DEMANGLE_SUPPORT=1 -s DISABLE_EXCEPTION_CATCHING=0 ")
+set(OPT_FLAGS "-O3 -s ALLOW_MEMORY_GROWTH=1 -s DISABLE_EXCEPTION_CATCHING=0 ")
 
 set(CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/installroot)
 
@@ -55,6 +55,4 @@ add_executable(test_emscripten_stuff test/test_emscripten_stuff.cpp)
 target_link_libraries(test_emscripten_stuff snark)
 
 
-add_executable(test_hashpreimage test/test_hashpreimage.cpp)
-target_link_libraries(test_hashpreimage snark)
-target_link_libraries(test_hashpreimage "-s EXCEPTION_DEBUG=1 -s DEMANGLE_SUPPORT=1 -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1")
+#target_link_libraries(test_hashpreimage "-s EXCEPTION_DEBUG=1 -s DEMANGLE_SUPPORT=1 -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1")
