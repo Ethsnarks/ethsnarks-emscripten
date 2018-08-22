@@ -4,6 +4,7 @@ python:
 install:
   - sudo apt-get update
   - ./emsdk/emsdk install latest
+  - ./emsdk/emsdk activate latest
   - . ./emsdk/emsdk_env.sh
 script:
   - make gmp openssl boost ethsnarks
