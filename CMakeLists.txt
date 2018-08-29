@@ -55,4 +55,3 @@ add_executable(test_emscripten_stuff test/test_emscripten_stuff.cpp)
 target_link_libraries(test_emscripten_stuff snark)
 
 
-#target_link_libraries(test_hashpreimage "-s EXCEPTION_DEBUG=1 -s DEMANGLE_SUPPORT=1 -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1")
