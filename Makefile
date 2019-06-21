@@ -57,8 +57,7 @@ gmp-bins: $(GMP_MAKE_BINS)
 .PHONY: gmp
 gmp: installroot/lib/libgmp.a
 
-installroot/lib/libgmp.a: $(GMP_DIR) $(GMP_MAKE_BINS) $(GMP_DIR)/Makefile 
-	./emsdk/emsdk_env.sh
+installroot/lib/libgmp.a: $(GMP_DIR) $(GMP_MAKE_BINS) $(GMP_DIR)/Makefile
 	make -C $(GMP_DIR) -j 2
 	make -C $(GMP_DIR) install
 
