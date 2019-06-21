@@ -13,18 +13,12 @@ set(CMAKE_CXX_FLAGS "--std=c++11 -s ALLOW_MEMORY_GROWTH=1 -s DISABLE_EXCEPTION_C
 
 set(CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/installroot)
 
-set(BOOST_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/boost_1_67_0)
-set(Boost_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/boost_1_67_0)
-set(Boost_LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/installroot/lib)
-
 set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH on)
-
-set(CRYPTO_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/installroot/lib/libcrypto.a)
 
 set(GMP_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/installroot/lib/libgmp.a)
 set(GMP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/installroot/include)
 set(GMP_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/installroot/lib/libgmp.a)
-set(GMPXX_LIBRARIES libgmpxx)
+
 
 
 include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/installroot/include)
