@@ -62,7 +62,7 @@ installroot/lib/libgmp.a: $(GMP_DIR) $(GMP_MAKE_BINS) $(GMP_DIR)/Makefile
 
 $(GMP_DIR)/Makefile: $(GMP_DIR)
 	cd $< && sed -i.bak -e 's/^# Only do the GMP_ASM .*/gmp_asm_syntax_testing=no/' configure.ac && autoconf
-	cd $< && emcmake ./configure ABI=standard --prefix=`pwd`/../installroot/ ABI=standard --host=none --disable-assembly --disable-shared
+	cd $< && emcmake ./configure ABI=standard --prefix=`pwd`/../installroot/ ABI=standard --host=none --disable-assembly --disable-shared || cat $(GMP_DIR)/config.log
 
 $(GMP_DIR): $(GMP_TAR)
 	tar -xf $<
