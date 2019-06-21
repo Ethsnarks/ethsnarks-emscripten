@@ -8,6 +8,8 @@ GMP_MAKE_BINS=$(addprefix $(GMP_DIR)/, gen-fib gen-fac gen-bases gen-trialdivtab
 
 FASTCOMP = emsdk/fastcomp
 
+emscripten: $(FASTCOMP)/emscripten/emcc
+
 $(FASTCOMP)/emscripten/emcc:
 	./emsdk/emsdk install latest
 	./emsdk/emsdk activate latest
@@ -16,7 +18,7 @@ $(FASTCOMP)/emscripten/emcc:
 	# cd $(FASTCOMP)/fastcomp/bin && mv llvm-ar llvm-ar.old && ln -s /usr/local/opt/llvm/bin/llvm-ar llvm-ar
 	source emsdk/emsdk_env.sh
 
-all: git-submodules $(FASTCOMP)/emscripten/emcc gmp ethsnarks
+all: git-submodules gmp ethsnarks
 	echo ...
 
 installroot:
