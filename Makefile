@@ -59,9 +59,9 @@ ethsnarks-patches:
 	cd ./ethsnarks/depends/libsnark/depends/libfqfft/depends/libff && patch -Ntp1 < $(ROOT_DIR)/libff.patch || true
 	cd ./ethsnarks/depends/libsnark/depends/libfqfft && patch -Ntp1 < $(ROOT_DIR)/libqfft.patch || true
 
-ethsnarks: build.emscripten/test_hashpreimage.js
+ethsnarks: build.emscripten/test_sha256_full_gadget.js
 
-build.emscripten/test_hashpreimage.js: build/cmake_install.cmake ethsnarks-patches
+build.emscripten/test_sha256_full_gadget.js: build/cmake_install.cmake ethsnarks-patches
 	make -C build -j 4
 
 build/cmake_install.cmake: build
@@ -82,7 +82,7 @@ installroot/lib/libgmp.a: $(GMP_DIR) $(GMP_MAKE_BINS) $(GMP_DIR)/Makefile
 
 $(GMP_DIR)/Makefile: $(GMP_DIR)
 	cd $< && sed -i.bak -e 's/^# Only do the GMP_ASM .*/gmp_asm_syntax_testing=no/' configure.ac && autoconf
-	cd $< && emcmake ./configure ABI=standard CFLAGS="-O3" --prefix=`pwd`/../installroot/ ABI=standard --host=none --disable-assembly --disable-shared || cat config.log
+	cd $< && emcmake ./configure ABI=standard CFLAGS="-O3 --llvm-lto 1" --prefix=`pwd`/../installroot/ ABI=standard --host=none --disable-assembly --disable-shared || cat config.log
 
 $(GMP_DIR): $(GMP_TAR)
 	tar -xf $<
