@@ -8,8 +8,12 @@ GMP_MAKE_BINS=$(addprefix $(GMP_DIR)/, gen-fib gen-fac gen-bases gen-trialdivtab
 
 FASTCOMP = emsdk/fastcomp
 
+all: git-submodules gmp ethsnarks
+	echo ...
+
 emscripten: $(FASTCOMP)/emscripten/emcc
 
+.PHONY: $(FASTCOMP)/emscripten/emcc
 $(FASTCOMP)/emscripten/emcc:
 	./emsdk/emsdk install latest
 	./emsdk/emsdk activate latest
@@ -17,9 +21,6 @@ $(FASTCOMP)/emscripten/emcc:
 	# cd $(FASTCOMP)/bin && mv llvm-ar llvm-ar.old && ln -s /usr/local/opt/llvm/bin/llvm-ar llvm-ar
 	# cd $(FASTCOMP)/fastcomp/bin && mv llvm-ar llvm-ar.old && ln -s /usr/local/opt/llvm/bin/llvm-ar llvm-ar
 	source emsdk/emsdk_env.sh
-
-all: git-submodules gmp ethsnarks
-	echo ...
 
 installroot:
 	mkdir -p $@
@@ -36,9 +37,9 @@ git-submodules:
 
 ethsnarks-patches:
 	echo $(ROOT_DIR)
-	cd ./ethsnarks/depends/libsnark/depends/libff && patch -tp1 < $(ROOT_DIR)/libff.patch || true
-	cd ./ethsnarks/depends/libsnark/depends/libfqfft/depends/libff && patch -tp1 < $(ROOT_DIR)/libff.patch || true
-	cd ./ethsnarks/depends/libsnark/depends/libfqfft && patch -tp1 < $(ROOT_DIR)/libqfft.patch || true
+	cd ./ethsnarks/depends/libsnark/depends/libff && patch -Ntp1 < $(ROOT_DIR)/libff.patch || true
+	cd ./ethsnarks/depends/libsnark/depends/libfqfft/depends/libff && patch -Ntp1 < $(ROOT_DIR)/libff.patch || true
+	cd ./ethsnarks/depends/libsnark/depends/libfqfft && patch -Ntp1 < $(ROOT_DIR)/libqfft.patch || true
 
 ethsnarks: build.emscripten/test_hashpreimage.js
 
