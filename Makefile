@@ -1,26 +1,17 @@
 ROOT_DIR := $(shell dirname "$(realpath $(lastword $(MAKEFILE_LIST)))")
 
-GMP_VERSION=6.1.2
+GMP_VERSION ?= 6.1.2
 GMP_DIR=gmp-$(GMP_VERSION)
 GMP_TAR=$(GMP_DIR).tar.bz2
 GMP_URL=https://ftp.gnu.org/pub/gnu/gmp/$(GMP_TAR)
 GMP_MAKE_BINS=$(addprefix $(GMP_DIR)/, gen-fib gen-fac gen-bases gen-trialdivtab gen-jacobitab gen-psqr)
 
-FASTCOMP = emsdk/fastcomp
+FASTCOMP ?= emsdk/fastcomp
+WORKING_LLVM_AR ?= /usr/local/opt/llvm/bin/llvm-ar 
+
+OS := $(shell uname)
 
 all: git-submodules gmp ethsnarks
-	echo ...
-
-emscripten: $(FASTCOMP)/emscripten/emcc
-
-.PHONY: $(FASTCOMP)/emscripten/emcc
-$(FASTCOMP)/emscripten/emcc:
-	./emsdk/emsdk install latest
-	./emsdk/emsdk activate latest
-	# For OSX:
-	# cd $(FASTCOMP)/bin && mv llvm-ar llvm-ar.old && ln -s /usr/local/opt/llvm/bin/llvm-ar llvm-ar
-	# cd $(FASTCOMP)/fastcomp/bin && mv llvm-ar llvm-ar.old && ln -s /usr/local/opt/llvm/bin/llvm-ar llvm-ar
-	source emsdk/emsdk_env.sh
 
 installroot:
 	mkdir -p $@
@@ -31,12 +22,39 @@ build:
 git-submodules:
 	git submodule update --init --recursive
 
+clean:
+	rm -rf build build.emscripten installroot gmp-*
+
+
+#######################################################################
+# emscripten
+
+emscripten: $(FASTCOMP)/emscripten/emcc
+
+.PHONY: $(FASTCOMP)/emscripten/emcc
+$(FASTCOMP)/emscripten/emcc:
+	./emsdk/emsdk install latest
+	./emsdk/emsdk activate latest
+	#source emsdk/emsdk_env.sh
+
+# On OSX, the `llvm-ar` executable which comes with emscripten is broken on some versions of OSX
+# It relies upon an unexported symbol, probably from a newer version of OSX
+# This is solved by installing `llvm` via Brew, then using that version of `llvm-ar`
+ifeq ($(OS), Darwin)
+emscripten: $(FASTCOMP)/bin/llvm-ar.old $(FASTCOMP)/fastcomp/bin/llvm-ar.old
+
+$(FASTCOMP)/bin/llvm-ar.old: $(FASTCOMP)/bin/llvm-ar
+	cd $(dir $@) && mv $(basename $<) $(basename $@) && ln -s $(WORKING_LLVM_AR) $(basename $<)
+
+$(FASTCOMP)/fastcomp/bin/llvm-ar.old: $(FASTCOMP)/fastcomp/bin/llvm-ar
+	cd $(dir $@) && mv $(basename $<) $(basename $@) && ln -s $(WORKING_LLVM_AR) $(basename $<)
+endif
+
 
 #######################################################################
 # ethsnarks
 
 ethsnarks-patches:
-	echo $(ROOT_DIR)
 	cd ./ethsnarks/depends/libsnark/depends/libff && patch -Ntp1 < $(ROOT_DIR)/libff.patch || true
 	cd ./ethsnarks/depends/libsnark/depends/libfqfft/depends/libff && patch -Ntp1 < $(ROOT_DIR)/libff.patch || true
 	cd ./ethsnarks/depends/libsnark/depends/libfqfft && patch -Ntp1 < $(ROOT_DIR)/libqfft.patch || true
@@ -64,7 +82,7 @@ installroot/lib/libgmp.a: $(GMP_DIR) $(GMP_MAKE_BINS) $(GMP_DIR)/Makefile
 
 $(GMP_DIR)/Makefile: $(GMP_DIR)
 	cd $< && sed -i.bak -e 's/^# Only do the GMP_ASM .*/gmp_asm_syntax_testing=no/' configure.ac && autoconf
-	cd $< && emcmake ./configure ABI=standard --prefix=`pwd`/../installroot/ ABI=standard --host=none --disable-assembly --disable-shared || cat config.log
+	cd $< && emcmake ./configure ABI=standard CFLAGS="-O3" --prefix=`pwd`/../installroot/ ABI=standard --host=none --disable-assembly --disable-shared || cat config.log
 
 $(GMP_DIR): $(GMP_TAR)
 	tar -xf $<
