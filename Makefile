@@ -57,7 +57,6 @@ endif
 ethsnarks-patches:
 	cd ./ethsnarks/depends/libsnark/depends/libff && patch -Ntp1 < $(ROOT_DIR)/libff.patch || true
 	cd ./ethsnarks/depends/libsnark/depends/libfqfft/depends/libff && patch -Ntp1 < $(ROOT_DIR)/libff.patch || true
-	cd ./ethsnarks/depends/libsnark/depends/libfqfft && patch -Ntp1 < $(ROOT_DIR)/libqfft.patch || true
 
 ethsnarks: build.emscripten/test_sha256_full_gadget.js
 

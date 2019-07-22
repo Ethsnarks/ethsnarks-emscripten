@@ -9,7 +9,7 @@ set(USE_ASM OFF)
 set(WITH_PROCPS OFF)
 set(DEBUG OFF)
 set(WITH_SUPERCOP OFF)
-set(CMAKE_CXX_FLAGS "-fno-rtti -O3 --llvm-lto 1 --std=c++11 -s ALLOW_MEMORY_GROWTH=1 -s DISABLE_EXCEPTION_CATCHING=0")
+set(CMAKE_CXX_FLAGS "-fno-rtti -O3 --llvm-lto 1 --std=c++11 -s ALLOW_MEMORY_GROWTH=1")
 
 set(CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/installroot)
 
@@ -31,7 +31,7 @@ include_directories(ethsnarks/src)
 include_directories(
   ${DEPENDS_DIR}/libsnark
   ${DEPENDS_DIR}/libsnark/depends/libff
-  ${DEPENDS_DIR}/libsnark/depends/libfqfft)
+  ${DEPENDS_DIR}/libfqfft)
 
 
 add_executable(test_primes test/primes.c)
